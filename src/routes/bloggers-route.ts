@@ -1,50 +1,42 @@
 import {Request, Response, Router} from "express";
+import {bloggersRepository} from "../repositories/bloggers-repository";
 
 export const bloggersRouter = Router ({})
 
 
-export const bloggers: Array<{ id: number, name: string, youtubeUrl: string}> = []
-
 bloggersRouter.get('/', (req: Request, res: Response) => {
+    const bloggers = bloggersRepository.findAllBloggers()
     res.send(bloggers)
 })
 
 bloggersRouter.get ('/:id', (req: Request, res: Response) => {
-    let blogger = bloggers.find(b => b.id === +req.params.id)
+    let blogger = bloggersRepository.findBloggerById(+req.params.id)
     if (blogger) {
-        res.status(200).send(blogger)
+        res.send(blogger).status(200)
     } else {
         res.send(404)
     }
 })
 
 bloggersRouter.post('/', (req: Request, res: Response) => {
-    const newBlogger = {
-        id: +(new Date()),
-        name: req.body.name,
-        youtubeUrl: req.body.youtubeUrl
-    }
-    bloggers.push(newBlogger)
+    const newBlogger = bloggersRepository.createBlogger(req.body.name, req.body.youtubeUrl)
     res.send(newBlogger).status(201)
 })
 
 bloggersRouter.delete('/:id',(req: Request, res: Response)=>{
-    for (let i=0; i<bloggers.length; i++) {
-        if (bloggers[i].id === +req.params.id) {
-            bloggers.splice(i, 1)
-            res.send(204)
-            return
-        }
+    const isDeleted = bloggersRepository.deleteBlogger(+req.params.id)
+    if (isDeleted) {
+        res.send(204)
+    } else {
+        res.send(404)
     }
-    res.send(404)
 })
 
 bloggersRouter.put('/:id',(req: Request, res: Response)=>{
-    let blogger = bloggers.find(v => v.id === +req.params.id)
-    if (blogger) {
-        blogger.name = req.body.name
-        blogger.youtubeUrl = req.body.youtubeUrl
-        res.send(blogger).status(201)
+    const isUpdated = bloggersRepository.updateBlogger(+req.params.id, req.body.name, req.body.youtubeUrl)
+    if (isUpdated) {
+       const blogger = bloggersRepository.findBloggerById(+req.params.id)
+       res.send(blogger)
     } else {
         res.send(404)
     }
