@@ -6,6 +6,7 @@ import {
     titlePostValidation
 } from "../middlewares/posts-validation-middleware";
 import {errorsMiddleware} from "../middlewares/errors-validation-miffleware";
+import {authMiddleware} from "../middlewares/authorization-middware";
 
 export const postsRouter = Router ({})
 
@@ -26,6 +27,7 @@ postsRouter.get ('/:id', (req: Request, res: Response) => {
 })
 
 postsRouter.post('/',
+    authMiddleware,
     titlePostValidation,
     shortDescriptionPostValidation,
     contentPostsValidation,
@@ -40,7 +42,9 @@ postsRouter.post('/',
     }
 })
 
-postsRouter.delete('/:id',(req: Request, res: Response)=>{
+postsRouter.delete('/:id',
+    authMiddleware,
+    (req: Request, res: Response)=>{
     const isDeleted = postsRepository.deletePost(+req.params.id)
     if (isDeleted) {
         res.send(204)
@@ -50,6 +54,7 @@ postsRouter.delete('/:id',(req: Request, res: Response)=>{
 })
 
 postsRouter.put('/:id',
+    authMiddleware,
     titlePostValidation,
     shortDescriptionPostValidation,
     contentPostsValidation,
@@ -59,7 +64,7 @@ postsRouter.put('/:id',
         req.body.shortDescription, req.body.content, +req.body.bloggerId)
     if (isUpdated) {
         const post = postsRepository.findPostById(+req.params.id)
-        res.send(post)
+        res.send(204)
         } else {
         res.send(404)
     }

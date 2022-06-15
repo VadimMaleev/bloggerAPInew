@@ -44,7 +44,7 @@ export const postsRepository = {
                 post.shortDescription = shortDescription
                 post.content = content
                 post.bloggerId = bloggerId
-                post.bloggerName = blogger.name
+               // post.bloggerName = blogger.name
                 return true
             } else {
                 return false

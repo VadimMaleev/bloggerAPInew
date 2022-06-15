@@ -5,6 +5,7 @@ import {
     youtubeUrlBloggersValidation
 } from "../middlewares/bloggers-validation-middleware";
 import {errorsMiddleware} from "../middlewares/errors-validation-miffleware";
+import {authMiddleware} from "../middlewares/authorization-middware";
 
 export const bloggersRouter = Router ({})
 
@@ -25,6 +26,7 @@ bloggersRouter.get ('/:id', (req: Request, res: Response) => {
 })
 
 bloggersRouter.post('/',
+    authMiddleware,
     nameBloggersValidation,
     youtubeUrlBloggersValidation,
     errorsMiddleware,
@@ -33,7 +35,9 @@ bloggersRouter.post('/',
     res.status(201).send(newBlogger)
 })
 
-bloggersRouter.delete('/:id',(req: Request, res: Response)=>{
+bloggersRouter.delete('/:id',
+    authMiddleware,
+    (req: Request, res: Response)=>{
     const isDeleted = bloggersRepository.deleteBlogger(+req.params.id)
     if (isDeleted) {
         res.send(204)
@@ -43,6 +47,7 @@ bloggersRouter.delete('/:id',(req: Request, res: Response)=>{
 })
 
 bloggersRouter.put('/:id',
+    authMiddleware,
     nameBloggersValidation,
     youtubeUrlBloggersValidation,
     errorsMiddleware,
@@ -50,7 +55,7 @@ bloggersRouter.put('/:id',
     const isUpdated = bloggersRepository.updateBlogger(+req.params.id, req.body.name, req.body.youtubeUrl)
     if (isUpdated) {
        const blogger = bloggersRepository.findBloggerById(+req.params.id)
-       res.send(blogger)
+       res.send(204)
     } else {
         res.send(404)
     }
