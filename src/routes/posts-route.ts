@@ -1,5 +1,11 @@
 import {Request, Response, Router} from "express";
 import {postsRepository} from "../repositories/posts-repository";
+import {
+    contentPostsValidation,
+    shortDescriptionPostValidation,
+    titlePostValidation
+} from "../middlewares/posts-validation-middleware";
+import {errorsMiddleware} from "../middlewares/errors-validation-miffleware";
 
 export const postsRouter = Router ({})
 
@@ -19,11 +25,16 @@ postsRouter.get ('/:id', (req: Request, res: Response) => {
     }
 })
 
-postsRouter.post('/', (req: Request, res: Response) => {
+postsRouter.post('/',
+    titlePostValidation,
+    shortDescriptionPostValidation,
+    contentPostsValidation,
+    errorsMiddleware,
+    (req: Request, res: Response) => {
     const newPost = postsRepository.createPost(req.body.title,
         req.body.shortDescription, req.body.content, +req.body.bloggerId)
     if (newPost) {
-        res.send(newPost).status(201)
+        res.status(201).send(newPost)
     } else {
         res.send(400)
     }
@@ -38,7 +49,12 @@ postsRouter.delete('/:id',(req: Request, res: Response)=>{
     }
 })
 
-postsRouter.put('/:id',(req: Request, res: Response)=>{
+postsRouter.put('/:id',
+    titlePostValidation,
+    shortDescriptionPostValidation,
+    contentPostsValidation,
+    errorsMiddleware,
+    (req: Request, res: Response)=>{
     const isUpdated = postsRepository.updatePost(+req.params.id, req.body.title,
         req.body.shortDescription, req.body.content, +req.body.bloggerId)
     if (isUpdated) {
