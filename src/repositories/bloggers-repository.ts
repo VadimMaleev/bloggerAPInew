@@ -1,13 +1,18 @@
 export const bloggers: Array<{ id: number, name: string, youtubeUrl: string}> = []
+type BloggerType = {
+    id: number,
+    name: string,
+    youtubeUrl: string
+}
 
 export const bloggersRepository = {
-    findAllBloggers() {
+    async findAllBloggers(): Promise<BloggerType[]> {
         return bloggers
     },
-    findBloggerById (id: number) {
+    async findBloggerById (id: number): Promise<BloggerType | undefined> {
         return bloggers.find(b => b.id === id)
     },
-    createBlogger (name: string, youtubeUrl: string) {
+    async createBlogger (name: string, youtubeUrl: string): Promise<BloggerType> {
         const newBlogger = {
             id: +(new Date()),
             name: name,
@@ -16,7 +21,7 @@ export const bloggersRepository = {
         bloggers.push(newBlogger)
         return newBlogger
     },
-    deleteBlogger (id:number) {
+    async deleteBlogger (id:number): Promise<boolean> {
         for (let i=0; i<bloggers.length; i++) {
             if (bloggers[i].id === id) {
                 bloggers.splice(i, 1)
@@ -25,7 +30,7 @@ export const bloggersRepository = {
         }
         return false
     },
-    updateBlogger (id:number, name: string, youtubeUrl: string) {
+    async updateBlogger (id:number, name: string, youtubeUrl: string): Promise<boolean> {
         let blogger = bloggers.find(v => v.id === id)
         if (blogger) {
             blogger.name = name

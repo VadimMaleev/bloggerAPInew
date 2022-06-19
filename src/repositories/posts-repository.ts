@@ -3,14 +3,24 @@ import {bloggers} from "./bloggers-repository";
 const posts: Array<{ id: number, title: string, shortDescription: string,
     content: string, bloggerId: number, bloggerName: string}> = []
 
+type PostType = {
+    id: number,
+    title: string,
+    shortDescription: string,
+    content: string,
+    bloggerId: number,
+    bloggerName: string
+}
+
 export const postsRepository = {
-    findAllPosts(){
+    async findAllPosts(): Promise<PostType[]> {
         return posts
     },
-    findPostById(id: number) {
+    async findPostById(id: number): Promise<PostType | undefined> {
         return posts.find(p => p.id === id)
     },
-    createPost(title: string, shortDescription: string, content: string, bloggerId: number) {
+    async createPost(title: string, shortDescription: string,
+                     content: string, bloggerId: number): Promise<PostType | undefined> {
         const blogger = bloggers.find(b => b.id === bloggerId)
         if (blogger) {
             const newPost = {
@@ -25,7 +35,7 @@ export const postsRepository = {
             return newPost
         }
     },
-    deletePost (id: number) {
+    async deletePost (id: number): Promise<boolean> {
         for (let i=0; i<posts.length; i++) {
             if (posts[i].id === id) {
                 posts.splice(i, 1)
@@ -34,8 +44,8 @@ export const postsRepository = {
         }
         return false
     },
-    updatePost (id: number, title: string, shortDescription: string,
-                content: string, bloggerId: number) {
+    async updatePost (id: number, title: string, shortDescription: string,
+                content: string, bloggerId: number): Promise<boolean | /*удалить при переходе на монгу--->*/undefined> {
         const blogger = bloggers.find(b => b.id === bloggerId)
         if (blogger) {
             let post = posts.find(v => v.id === id)
