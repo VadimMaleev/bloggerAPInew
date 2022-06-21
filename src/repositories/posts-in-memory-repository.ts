@@ -1,4 +1,4 @@
-import {bloggers} from "./bloggers-repository";
+import {bloggers} from "./bloggers-in-memory-repository";
 
 const posts: Array<{ id: number, title: string, shortDescription: string,
     content: string, bloggerId: number, bloggerName: string}> = []
