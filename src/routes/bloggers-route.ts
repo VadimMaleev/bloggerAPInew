@@ -51,8 +51,8 @@ bloggersRouter.get('/:id', async (req: Request, res: Response) => {
 
 bloggersRouter.post('/',
     authMiddleware,
-    nameBloggersValidation,
     youtubeUrlBloggersValidation,
+    nameBloggersValidation,
     errorsMiddleware,
     async (req: Request, res: Response) => {
         const newBlogger = await bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
@@ -72,8 +72,8 @@ bloggersRouter.delete('/:id',
 
 bloggersRouter.put('/:id',
     authMiddleware,
-    nameBloggersValidation,
     youtubeUrlBloggersValidation,
+    nameBloggersValidation,
     errorsMiddleware,
     async (req: Request, res: Response) => {
         const isUpdated = await bloggersService.updateBlogger(+req.params.id, req.body.name, req.body.youtubeUrl)
@@ -116,6 +116,9 @@ bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
         totalCount: totalCount,
         items: foundPosts
     }
-
-    res.send(paginatorPosts)
+    if (foundPosts === null) {
+        res.send(404)
+    } else {
+        res.send(paginatorPosts)
+    }
 })
