@@ -3,14 +3,14 @@ import {bloggersCollection, PostType} from "../repositories/db";
 
 
 export const postsService = {
-    async findAllPosts(): Promise<PostType[]> {
-        return postsRepository.findAllPosts()
+    async findAllPosts(page: number, pageSize: number): Promise<PostType[]> {
+        return postsRepository.findAllPosts(page, pageSize)
     },
     async findPostById(id: number): Promise<PostType | null> {
         return await postsRepository.findPostById(id)
     },
-    async findPosts(bloggerId: number) {
-        return await postsRepository.findPosts(bloggerId)
+    async findPosts(bloggerId: number, page: number, pageSize: number) {
+        return await postsRepository.findPosts(bloggerId, page, pageSize)
     },
     async createPost(title: string, shortDescription: string,
                      content: string, bloggerId: number): Promise<PostType | null> {

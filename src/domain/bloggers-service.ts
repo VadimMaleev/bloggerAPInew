@@ -5,8 +5,8 @@ export const bloggersService = {
     async findBloggers(name: string | null| undefined) {
         return await bloggersRepository.findBloggers(name)
     },
-    async findAllBloggers(): Promise<BloggerType[]> {
-        return await bloggersRepository.findAllBloggers()
+    async findAllBloggers(page: number, pageSize: number): Promise<BloggerType[]> {
+        return await bloggersRepository.findAllBloggers(page, pageSize)
     },
 
     async findBloggerById (id: number): Promise<BloggerType | null> {

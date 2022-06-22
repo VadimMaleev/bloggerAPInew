@@ -1,22 +1,31 @@
-import {bloggersCollection, postsCollection, PostType} from "./db";
+import {postsCollection, PostType} from "./db";
+import {ObjectId} from "mongodb";
+import {postsService} from "../domain/posts-service";
 
 
 export const postsRepository = {
-    async findAllPosts(): Promise<PostType[]> {
-        return await postsCollection.find({}, {projection:{_id:0}}).toArray()
+    async findAllPosts(page: number, pageSize: number): Promise<PostType[]> {
+        return await postsCollection.find({}, {projection:{_id:0}})
+            .skip(pageSize*(page-1)).limit(pageSize).toArray()
     },
     async findPostById(id: number): Promise<PostType | null> {
         return await postsCollection.findOne({id: id}, {projection:{_id:0}})
     },
-    async findPosts(bloggerId: number) {
+    async findPosts(bloggerId: number, page: number, pageSize: number) {
         if (bloggerId) {
-            return await postsCollection.find({bloggerId}, {projection: {_id: 0}}).toArray();
+            return await postsCollection.find({bloggerId}, {projection: {_id: 0}})
+                .skip(pageSize*(page-1)).limit(pageSize).toArray();
         } else {
-            return await postsCollection.find({}, {projection:{_id:0}}).toArray()
+            return await postsCollection.find({}, {projection:{_id:0}})
+                .skip(pageSize*(page-1)).limit(pageSize).toArray()
         }
     },
     async createPost(newPost: PostType): Promise<PostType | null> {
-        await postsCollection.insertOne(newPost)
+        const postTypeDb = {
+            _id: new ObjectId,
+            ... newPost
+        }
+        await postsCollection.insertOne(postTypeDb)
         return newPost
     },
     async deletePost(id: number): Promise<boolean> {

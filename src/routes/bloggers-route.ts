@@ -12,19 +12,32 @@ import {
     shortDescriptionPostValidation,
     titlePostValidation
 } from "../middlewares/posts-validation-middleware";
+import {bloggersCollection, postsCollection} from "../repositories/db";
 
 
 export const bloggersRouter = Router({})
 
 
 bloggersRouter.get('/', async (req: Request, res: Response) => {
+    const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
+    const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
+    const totalCount = await bloggersCollection.count({})
     let bloggers = []
     if (req.query.SearchNameTerm) {
         bloggers = await bloggersService.findBloggers(req.query.SearchNameTerm?.toString())
     } else {
-        bloggers = await bloggersService.findAllBloggers()
+        bloggers = await bloggersService.findAllBloggers(page, pageSize)
     }
-    res.status(200).send(bloggers)
+
+    const paginatorBloggers = {
+        pagesCount: Math.ceil(totalCount / pageSize),
+        page: page,
+        pageSize: pageSize,
+        totalCount: totalCount,
+        items: bloggers
+    }
+
+    res.status(200).send(paginatorBloggers)
 })
 
 bloggersRouter.get('/:id', async (req: Request, res: Response) => {
@@ -90,7 +103,19 @@ bloggersRouter.post('/:bloggerId/posts',
 
 //Get Posts from Blogger
 bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
+    const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
+    const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
+    const totalCount = await postsCollection.count({})
     const bloggerId = +(req.params.bloggerId || 0)
-    const foundPosts = await postsService.findPosts(bloggerId)
-    res.status(200).send(foundPosts)
+    const foundPosts = await postsService.findPosts(bloggerId, page, pageSize)
+
+    const paginatorPosts = {
+        pagesCount: Math.ceil(totalCount / pageSize),
+        page: page,
+        pageSize: pageSize,
+        totalCount: totalCount,
+        items: foundPosts
+    }
+
+    res.send(paginatorPosts)
 })

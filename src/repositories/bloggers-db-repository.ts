@@ -1,4 +1,5 @@
 import {bloggersCollection, BloggerType} from "./db";
+import {ObjectId} from "mongodb";
 
 export const bloggersRepository = {
     async findBloggers(name: string | null | undefined) {
@@ -8,14 +9,19 @@ export const bloggersRepository = {
         }
         return await bloggersCollection.find(filter, {projection:{_id:0}}).toArray()
     },
-    async findAllBloggers(): Promise<BloggerType[]> {
-        return await bloggersCollection.find({}, {projection:{_id:0}}).toArray()
+    async findAllBloggers(page: number, pageSize: number): Promise<BloggerType[]> {
+        return await bloggersCollection.find({}, {projection:{_id:0}})
+            .skip(pageSize*(page-1)).limit(pageSize).toArray()
     },
     async findBloggerById (id: number): Promise<BloggerType | null> {
         return await bloggersCollection.findOne({id: id}, {projection:{_id:0}})
     },
     async createBlogger (newBlogger: BloggerType): Promise<BloggerType> {
-        await bloggersCollection.insertOne(newBlogger)
+        const bloggerTypeDb = {
+            _id: new ObjectId,
+            ... newBlogger
+        }
+        await bloggersCollection.insertOne(bloggerTypeDb)
         return newBlogger
     },
     async deleteBlogger (id:number): Promise<boolean> {

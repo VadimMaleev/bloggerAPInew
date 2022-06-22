@@ -8,14 +8,26 @@ import {
 import {errorsMiddleware} from "../middlewares/errors-validation-middleware";
 import {authMiddleware} from "../middlewares/authorization-middware";
 import {bloggersService} from "../domain/bloggers-service";
+import {postsCollection} from "../repositories/db";
 
 export const postsRouter = Router ({})
 
 
 
 postsRouter.get('/', async (req: Request, res: Response) => {
-    const posts = await postsService.findAllPosts()
-    res.send(posts)
+    const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
+    const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
+    const totalCount = await postsCollection.count({})
+    let posts = await postsService.findAllPosts(page, pageSize)
+
+    const paginatorPosts = {
+        pagesCount: Math.ceil(totalCount / pageSize),
+        page: page,
+        pageSize: pageSize,
+        totalCount: totalCount,
+        items: posts
+    }
+    res.status(200).send(paginatorPosts)
 })
 
 postsRouter.get ('/:id', async (req: Request, res: Response) => {
