@@ -94,10 +94,10 @@ bloggersRouter.post('/:bloggerId/posts',
     errorsMiddleware,
     async (req: Request, res: Response) => {
         const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, +req.params.bloggerId)
-        res.status(201).send(newPost)
-
         if (newPost === null) {
-            res.send(400)
+            res.send(404)
+        } else {
+            res.status(201).send(newPost)
         }
     })
 

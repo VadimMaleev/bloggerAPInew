@@ -15,8 +15,7 @@ export const errorsMiddleware = (req: Request, res: Response, next: NextFunction
         })
         res.status(400).send(
             {
-                errorsMassages: errs,
-                resultCode: 1
+                errorsMassages: errs
             }
         )
         return

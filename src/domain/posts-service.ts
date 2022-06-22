@@ -14,12 +14,12 @@ export const postsService = {
     },
     async createPost(title: string, shortDescription: string,
                      content: string, bloggerId: number): Promise<PostType | null> {
+
         if (bloggerId) {
             const blogger = await bloggersCollection.findOne({id: bloggerId})
             if (!blogger) {
                 return null
             }
-
             const newPost = {
                 id: +(new Date()),
                 title: title,
@@ -28,7 +28,7 @@ export const postsService = {
                 bloggerId: bloggerId,
                 bloggerName: blogger.name
             }
-            const createdPost  = await postsRepository.createPost(newPost)
+            const createdPost = await postsRepository.createPost(newPost)
             return createdPost
         } else {
             return null
