@@ -105,7 +105,7 @@ bloggersRouter.post('/:bloggerId/posts',
 bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
     const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
     const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
-    const totalCount = await postsCollection.find().count()
+    const totalCount = await postsCollection.count({})
     const bloggerId = +(req.params.bloggerId || 0)
     const foundPosts = await postsService.findPosts(bloggerId, page, pageSize)
 
