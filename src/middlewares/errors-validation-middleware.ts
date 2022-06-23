@@ -8,17 +8,16 @@ export const errorsMiddleware = (req: Request, res: Response, next: NextFunction
     if (!errors.isEmpty()) {
         const errs = errors.array({onlyFirstError: true}).map((error) => {
             const errorObject = {
-                massage:error.msg,
+                message:error.msg,
                 field: error.param
             }
             return errorObject
         })
         res.status(400).send(
             {
-                errorsMassages: errs
+                errorsMessages: errs
             }
         )
-        return
     }
     next()
 }
