@@ -18,6 +18,7 @@ export const errorsMiddleware = (req: Request, res: Response, next: NextFunction
                 errorsMessages: errs
             }
         )
+        return
     }
     next()
 }
