@@ -51,7 +51,10 @@ postsRouter.post('/',
         if (newPost) {
             res.status(201).send(newPost)
         } else {
-            res.send(400)
+            res.status(400).send({ errorsMessages:
+                    [{ message: "Blogger not found",
+                        field: "bloggerId" }]
+            })
         }
     })
 
@@ -84,6 +87,9 @@ postsRouter.put('/:id',
                 res.send(404)
             }
         } else {
-            res.status(400).send("Blogger is not found")
+            res.status(400).send({ errorsMessages:
+                    [{ message: "Blogger not found",
+                        field: "bloggerId" }]
+            })
         }
     })
