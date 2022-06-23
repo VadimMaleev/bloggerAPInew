@@ -1,17 +1,27 @@
-import {bloggersCollection, BloggerType} from "./db";
+import {BloggerPagType, bloggersCollection, BloggerType} from "./db";
 import {ObjectId} from "mongodb";
 
 export const bloggersRepository = {
-    async findBloggers(name: string | null | undefined) {
+    async forCount (name:string): Promise<number> {
+        let filter: any = {}
+        if (name) {
+            filter.name = {$regex: name}
+        }
+        var count = await bloggersCollection.countDocuments(filter)
+        return count
+    },
+    async findBloggers(name: string, page: number, pageSize: number): Promise<BloggerType> {
         let filter: any = {}
         if (name) {
            filter.name = {$regex: name}
         }
-        return await bloggersCollection.find(filter, {projection:{_id:0}}).toArray()
-    },
-    async findAllBloggers(page: number, pageSize: number): Promise<BloggerType[]> {
-        return await bloggersCollection.find({}, {projection:{_id:0}})
+        return bloggersCollection.find({filter}, {projection:{_id:0}})
             .skip(pageSize*(page-1)).limit(pageSize).toArray()
+
+    },
+    async findAllBloggers(page: number, pageSize: number): Promise<BloggerPagType[]> {
+        return  await bloggersCollection.find({}, {projection:{_id:0}})
+                .skip(pageSize*(page-1)).limit(pageSize).toArray()
     },
     async findBloggerById (id: number): Promise<BloggerType | null> {
         return await bloggersCollection.findOne({id: id}, {projection:{_id:0}})

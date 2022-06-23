@@ -1,12 +1,25 @@
 import {bloggersRepository} from "../repositories/bloggers-db-repository";
-import {BloggerType} from "../repositories/db";
+import {BloggerPagType, bloggersCollection, BloggerType} from "../repositories/db";
 
 export const bloggersService = {
-    async findBloggers(name: string | null| undefined) {
-        return await bloggersRepository.findBloggers(name)
+    async findBloggers(name: string, page: number, pageSize: number): Promise<BloggerPagType> {
+        return {
+            pagesCount: Math.ceil(await bloggersRepository.forCount(name)/ pageSize),
+            page: page,
+            pageSize: pageSize,
+            totalCount: await bloggersRepository.forCount(name),
+            items: await bloggersRepository.findBloggers(name, page, pageSize)
+        }
+
     },
-    async findAllBloggers(page: number, pageSize: number): Promise<BloggerType[]> {
-        return await bloggersRepository.findAllBloggers(page, pageSize)
+    async findAllBloggers(page: number, pageSize: number): Promise<BloggerPagType[]> {
+        return {
+            pagesCount: Math.ceil(await bloggersRepository.forCount(name)/ pageSize),
+            page: page,
+            pageSize: pageSize,
+            totalCount: await bloggersRepository.forCount(name),
+            items: await bloggersRepository.findAllBloggers(page, pageSize)
+        }
     },
 
     async findBloggerById (id: number): Promise<BloggerType | null> {

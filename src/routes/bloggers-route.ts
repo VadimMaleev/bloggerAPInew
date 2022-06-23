@@ -12,7 +12,7 @@ import {
     shortDescriptionPostValidation,
     titlePostValidation
 } from "../middlewares/posts-validation-middleware";
-import {bloggersCollection, postsCollection} from "../repositories/db";
+import {postsCollection} from "../repositories/db";
 
 
 export const bloggersRouter = Router({})
@@ -21,23 +21,23 @@ export const bloggersRouter = Router({})
 bloggersRouter.get('/', async (req: Request, res: Response) => {
     const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
     const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
-    const totalCount = await bloggersCollection.count({})
-    let bloggers = []
     if (req.query.SearchNameTerm) {
-        bloggers = await bloggersService.findBloggers(req.query.SearchNameTerm?.toString())
+        const bloggers =  await bloggersService.findBloggers(req.query.SearchNameTerm?.toString(), page, pageSize)
+        return res.send(bloggers)
     } else {
-        bloggers = await bloggersService.findAllBloggers(page, pageSize)
+        const bloggers =  await bloggersService.findAllBloggers(page, pageSize)
+        return res.send(bloggers)
     }
 
-    const paginatorBloggers = {
-        pagesCount: Math.ceil(totalCount / pageSize),
-        page: page,
-        pageSize: pageSize,
-        totalCount: totalCount,
-        items: bloggers
-    }
+    // const paginatorBloggers = {
+    //     pagesCount: Math.ceil(totalCount / pageSize),
+    //     page: page,
+    //     pageSize: pageSize,
+    //     totalCount: totalCount,
+    //     items: bloggers
+    // }
 
-    res.status(200).send(paginatorBloggers)
+    // res.status(200).send(paginatorBloggers)
 })
 
 bloggersRouter.get('/:id', async (req: Request, res: Response) => {
