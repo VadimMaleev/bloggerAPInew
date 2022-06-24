@@ -21,23 +21,10 @@ export const bloggersRouter = Router({})
 bloggersRouter.get('/', async (req: Request, res: Response) => {
     const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
     const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
-    if (req.query.SearchNameTerm) {
-        const bloggers =  await bloggersService.findBloggers(req.query.SearchNameTerm?.toString(), page, pageSize)
-        return res.send(bloggers)
-    } else {
-        const bloggers =  await bloggersService.findAllBloggers(page, pageSize)
-        return res.send(bloggers)
-    }
+    const name = req.query.SearchNameTerm?.toString()
 
-    // const paginatorBloggers = {
-    //     pagesCount: Math.ceil(totalCount / pageSize),
-    //     page: page,
-    //     pageSize: pageSize,
-    //     totalCount: totalCount,
-    //     items: bloggers
-    // }
-
-    // res.status(200).send(paginatorBloggers)
+    const bloggers =  await bloggersService.findAllBloggers(name, page, pageSize)
+    return res.send(bloggers)
 })
 
 bloggersRouter.get('/:id', async (req: Request, res: Response) => {
@@ -105,20 +92,12 @@ bloggersRouter.post('/:bloggerId/posts',
 bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
     const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
     const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
-    const totalCount = await postsCollection.count({})
-    const bloggerId = +(req.params.bloggerId || 0)
-    const foundPosts = await postsService.findPosts(bloggerId, page, pageSize)
+    const id = +(req.params.bloggerId || 0)
+    const foundPosts = await postsService.findPosts(id, page, pageSize)
 
-    const paginatorPosts = {
-        pagesCount: Math.ceil(totalCount / pageSize),
-        page: page,
-        pageSize: pageSize,
-        totalCount: totalCount,
-        items: foundPosts
-    }
     if (foundPosts === null) {
         res.send(404)
     } else {
-        res.send(paginatorPosts)
+        res.send(foundPosts)
     }
 })

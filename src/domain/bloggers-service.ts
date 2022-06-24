@@ -2,23 +2,16 @@ import {bloggersRepository} from "../repositories/bloggers-db-repository";
 import {BloggerPagType, bloggersCollection, BloggerType} from "../repositories/db";
 
 export const bloggersService = {
-    async findBloggers(name: string, page: number, pageSize: number): Promise<BloggerPagType> {
-        return {
-            pagesCount: Math.ceil(await bloggersRepository.forCount(name)/ pageSize),
-            page: page,
-            pageSize: pageSize,
-            totalCount: await bloggersRepository.forCount(name),
-            items: await bloggersRepository.findBloggers(name, page, pageSize)
-        }
+    async findAllBloggers(name: string | undefined, page: number, pageSize: number): Promise<BloggerPagType> {
+        const pagesCount = Math.ceil(await bloggersRepository.forCount(name)/ pageSize)
+        const totalCount = await bloggersRepository.forCount(name)
 
-    },
-    async findAllBloggers(page: number, pageSize: number): Promise<BloggerPagType[]> {
         return {
-            pagesCount: Math.ceil(await bloggersRepository.forCount(name)/ pageSize),
+            pagesCount: pagesCount,
             page: page,
             pageSize: pageSize,
-            totalCount: await bloggersRepository.forCount(name),
-            items: await bloggersRepository.findAllBloggers(page, pageSize)
+            totalCount: totalCount,
+            items: await bloggersRepository.findAllBloggers(name, page, pageSize)
         }
     },
 

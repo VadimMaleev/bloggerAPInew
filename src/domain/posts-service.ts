@@ -1,16 +1,38 @@
 import {postsRepository} from "../repositories/posts-db-repository";
-import {bloggersCollection, PostType} from "../repositories/db";
+import {bloggersCollection, PostPagType, PostType} from "../repositories/db";
+import {bloggersRepository} from "../repositories/bloggers-db-repository";
 
 
 export const postsService = {
-    async findAllPosts(page: number, pageSize: number): Promise<PostType[]> {
-        return postsRepository.findAllPosts(page, pageSize)
+    async findAllPosts(page: number, pageSize: number): Promise<PostPagType> {
+        const pagesCount = Math.ceil(await postsRepository.forCount() / pageSize)
+        const totalCount = await postsRepository.forCount()
+        return {
+            pagesCount: pagesCount,
+            page: page,
+            pageSize: pageSize,
+            totalCount: totalCount,
+            items: await postsRepository.findAllPosts(page, pageSize)
+        }
     },
     async findPostById(id: number): Promise<PostType | null> {
         return await postsRepository.findPostById(id)
     },
-    async findPosts(bloggerId: number, page: number, pageSize: number) {
-        return await postsRepository.findPosts(bloggerId, page, pageSize)
+    async findPosts(id: number, page: number, pageSize: number): Promise<PostPagType | null > {
+        const pagesCount = Math.ceil(await postsRepository.forCountId(id) / pageSize)
+        const totalCount = await postsRepository.forCountId(id)
+        const blogger = await bloggersRepository.findBloggerById(id)
+        if (blogger) {
+            return {
+                pagesCount: pagesCount,
+                page: page,
+                pageSize: pageSize,
+                totalCount: totalCount,
+                items: await postsRepository.findPosts(id, page, pageSize)
+            }
+        } else {
+            return null
+        }
     },
     async createPost(title: string, shortDescription: string,
                      content: string, bloggerId: number): Promise<PostType | null> {

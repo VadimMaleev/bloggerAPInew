@@ -3,6 +3,12 @@ import {ObjectId} from "mongodb";
 
 
 export const postsRepository = {
+    async forCount(): Promise<number> {
+        return postsCollection.countDocuments()
+    },
+    async forCountId(id: number) {
+        return postsCollection.countDocuments({bloggerId: id})
+    },
     async findAllPosts(page: number, pageSize: number): Promise<PostType[]> {
         return await postsCollection.find({}, {projection: {_id: 0}})
             .skip(pageSize * (page - 1)).limit(pageSize).toArray()
@@ -10,15 +16,9 @@ export const postsRepository = {
     async findPostById(id: number): Promise<PostType | null> {
         return await postsCollection.findOne({id: id}, {projection: {_id: 0}})
     },
-    async findPosts(bloggerId: number, page: number, pageSize: number) {
-        const blogger = await bloggersCollection.findOne({id: bloggerId})
-        if (blogger) {
-            return await postsCollection.find({bloggerId}, {projection: {_id: 0}})
+    async findPosts(id: number, page: number, pageSize: number): Promise<PostType[]> {
+            return postsCollection.find({bloggerId: id}, {projection: {_id: 0}})
                 .skip(pageSize * (page - 1)).limit(pageSize).toArray();
-        } else {
-            return null
-        }
-
     },
     async createPost(newPost: PostType): Promise<PostType | null> {
         const postTypeDb = {

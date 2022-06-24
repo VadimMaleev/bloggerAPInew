@@ -11,7 +11,7 @@ export type BloggerPagType = {
     page: number,
     pageSize: number,
     totalCount: number,
-    items: BloggerType
+    items: BloggerType[]
 }
 
 export type PostType = {
@@ -23,11 +23,19 @@ export type PostType = {
     bloggerName: string
 }
 
+export type PostPagType = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: PostType[]
+}
+
 const mongoUri =
     process.env.mongoUri ||
         "mongodb://0.0.0.0:27017";
 const mongoUriCloud = "mongodb://adminadmin:qwertyqwerty@ac-elscy7v-shard-00-00.1kg0qnf.mongodb.net:27017,ac-elscy7v-shard-00-01.1kg0qnf.mongodb.net:27017,ac-elscy7v-shard-00-02.1kg0qnf.mongodb.net:27017/?ssl=true&replicaSet=atlas-vr4d13-shard-0&authSource=admin&retryWrites=true&w=majority"
-export const client = new MongoClient(mongoUri)
+export const client = new MongoClient(mongoUriCloud)
 
 const db = client.db("bloggers-api");
 export const bloggersCollection = db.collection<BloggerType>("bloggers");

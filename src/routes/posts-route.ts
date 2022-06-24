@@ -17,17 +17,9 @@ export const postsRouter = Router ({})
 postsRouter.get('/', async (req: Request, res: Response) => {
     const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
     const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
-    const totalCount = await postsCollection.count({})
-    let posts = await postsService.findAllPosts(page, pageSize)
 
-    const paginatorPosts = {
-        pagesCount: Math.ceil(totalCount / pageSize),
-        page: page,
-        pageSize: pageSize,
-        totalCount: totalCount,
-        items: posts
-    }
-    res.status(200).send(paginatorPosts)
+    let posts = await postsService.findAllPosts(page, pageSize)
+    res.status(200).send(posts)
 })
 
 postsRouter.get ('/:id', async (req: Request, res: Response) => {
