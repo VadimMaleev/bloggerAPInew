@@ -12,7 +12,6 @@ import {
     shortDescriptionPostValidation,
     titlePostValidation
 } from "../middlewares/posts-validation-middleware";
-import {postsCollection} from "../repositories/db";
 
 
 export const bloggersRouter = Router({})
@@ -21,14 +20,14 @@ export const bloggersRouter = Router({})
 bloggersRouter.get('/', async (req: Request, res: Response) => {
     const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
     const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
-    const name = req.query.SearchNameTerm?.toString()
+    const name = req.query.SearchNameTerm?.toString() || null
 
     const bloggers =  await bloggersService.findAllBloggers(name, page, pageSize)
     return res.send(bloggers)
 })
 
 bloggersRouter.get('/:id', async (req: Request, res: Response) => {
-    let blogger = await bloggersService.findBloggerById(+req.params.id)
+    let blogger = await bloggersService.findBloggerById(req.params.id)
     if (blogger) {
         res.send(blogger).status(200)
     } else {
@@ -49,7 +48,7 @@ bloggersRouter.post('/',
 bloggersRouter.delete('/:id',
     authMiddleware,
     async (req: Request, res: Response) => {
-        const isDeleted = await bloggersService.deleteBlogger(+req.params.id)
+        const isDeleted = await bloggersService.deleteBlogger(req.params.id)
         if (isDeleted) {
             res.send(204)
         } else {
@@ -63,9 +62,9 @@ bloggersRouter.put('/:id',
     nameBloggersValidation,
     errorsMiddleware,
     async (req: Request, res: Response) => {
-        const isUpdated = await bloggersService.updateBlogger(+req.params.id, req.body.name, req.body.youtubeUrl)
+        const isUpdated = await bloggersService.updateBlogger(req.params.id, req.body.name, req.body.youtubeUrl)
         if (isUpdated) {
-            const blogger = await bloggersService.findBloggerById(+req.params.id)
+            const blogger = await bloggersService.findBloggerById(req.params.id)
             res.status(204).send(blogger)
         } else {
             res.send(404)
@@ -80,7 +79,7 @@ bloggersRouter.post('/:bloggerId/posts',
     contentPostsValidation,
     errorsMiddleware,
     async (req: Request, res: Response) => {
-        const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, +req.params.bloggerId)
+        const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.params.bloggerId)
         if (newPost === null) {
             res.send(404)
         } else {
@@ -92,7 +91,7 @@ bloggersRouter.post('/:bloggerId/posts',
 bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
     const page = isNaN(Number(req.query.PageNumber))? 1: +req.query.PageNumber!
     const pageSize = isNaN(Number(req.query.PageSize))? 10: +req.query.PageSize!
-    const id = +(req.params.bloggerId || 0)
+    const id = req.params.bloggerId
     const foundPosts = await postsService.findPosts(id, page, pageSize)
 
     if (foundPosts === null) {

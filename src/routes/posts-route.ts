@@ -8,7 +8,7 @@ import {
 import {errorsMiddleware} from "../middlewares/errors-validation-middleware";
 import {authMiddleware} from "../middlewares/authorization-middware";
 import {bloggersService} from "../domain/bloggers-service";
-import {postsCollection} from "../repositories/db";
+
 
 export const postsRouter = Router ({})
 
@@ -23,7 +23,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 })
 
 postsRouter.get ('/:id', async (req: Request, res: Response) => {
-    const post = await postsService.findPostById(+req.params.id)
+    const post = await postsService.findPostById(req.params.id)
     if (post) {
         res.send(post).status(200)
     } else {
@@ -39,7 +39,7 @@ postsRouter.post('/',
     errorsMiddleware,
     async (req: Request, res: Response) => {
         const newPost = await postsService.createPost(req.body.title,
-            req.body.shortDescription, req.body.content, +req.body.bloggerId)
+            req.body.shortDescription, req.body.content, req.body.bloggerId)
         if (newPost) {
             res.status(201).send(newPost)
         } else {
@@ -53,7 +53,7 @@ postsRouter.post('/',
 postsRouter.delete('/:id',
     authMiddleware,
     async (req: Request, res: Response) => {
-        const isDeleted = await postsService.deletePost(+req.params.id)
+        const isDeleted = await postsService.deletePost(req.params.id)
         if (isDeleted) {
             res.send(204)
         } else {
@@ -68,12 +68,12 @@ postsRouter.put('/:id',
     contentPostsValidation,
     errorsMiddleware,
     async (req: Request, res: Response) => {
-    const blogger = await bloggersService.findBloggerById(+req.body.bloggerId)
+    const blogger = await bloggersService.findBloggerById(req.body.bloggerId)
         if (blogger) {
-            const isUpdated = await postsService.updatePost(+req.params.id, req.body.title,
-                req.body.shortDescription, req.body.content, +req.body.bloggerId)
+            const isUpdated = await postsService.updatePost(req.params.id, req.body.title,
+                req.body.shortDescription, req.body.content, req.body.bloggerId)
             if (isUpdated) {
-                const post = await postsService.findPostById(+req.params.id)
+                const post = await postsService.findPostById(req.params.id)
                 res.status(204).send(post)
             } else {
                 res.send(404)
