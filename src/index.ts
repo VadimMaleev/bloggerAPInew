@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
-app.use('users', usersRouter)
+app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 
 const startApp = async () => {

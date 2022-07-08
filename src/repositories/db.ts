@@ -1,4 +1,4 @@
-import {MongoClient} from "mongodb";
+import {MongoClient, ObjectId, WithId} from "mongodb";
 
 // export interface pagination {
 //     pagesCount: number,
@@ -60,6 +60,13 @@ export type UserPagType = {
     items: UserType[]
 }
 
+export type UserDBType = WithId<{
+    _id: ObjectId
+    id: string
+    login: string
+    passwordHash: string
+}>
+
 const mongoUri =
     process.env.mongoUri ||
         "mongodb://0.0.0.0:27017";
@@ -69,7 +76,7 @@ export const client = new MongoClient(mongoUri)
 const db = client.db("bloggers-api");
 export const bloggersCollection = db.collection<BloggerType>("bloggers");
 export const postsCollection = db.collection<PostType>("posts");
-export const usersCollection = db.collection<UserType>("users");
+export const usersCollection = db.collection<UserDBType>("users");
 
 export async function runDb() {
     try {

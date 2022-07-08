@@ -15,14 +15,13 @@ export const usersService = {
             items: await usersRepository.findAllUsers(page, pageSize)
         }
     },
-    async createUser(login: string, password: string): Promise<UserType> {
-        const passwordHash = await authService.generateHash(password)
+    async createUser(login: string, password: string): Promise<{id: string, login: string}> {
         const newUser = {
             id: (+(new Date())).toString(),
-            login: login,
-            passwordHash
+            login: login
         }
-        return usersRepository.createUser(newUser, passwordHash)
+        const hash = await authService.generateHash(password)
+        return usersRepository.createUser(newUser, hash)
     },
     async deleteUser(id:string): Promise<boolean> {
         return await usersRepository.deleteUser(id)
