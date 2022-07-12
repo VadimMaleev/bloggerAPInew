@@ -108,6 +108,7 @@ postsRouter.get('/:id/comments', async (req: Request, res: Response) => {
 postsRouter.post('/:id/comments',
     jwtAuthMiddleware,
     commentsValidation,
+    errorsMiddleware,
     async (req: Request, res: Response) => {
         const newComment = await commentsService.createComment(req.params.id, req.body.content, req.user!.id, req.user!.login)
         if (newComment === null) {

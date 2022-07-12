@@ -36,5 +36,14 @@ export const commentsService = {
         } else {
             return null
         }
+    },
+    async findCommentById(id: string): Promise<CommentType | null> {
+        return await commentsRepository.findCommentById(id)
+    },
+    async updateComment(id: string, content: string): Promise<boolean | undefined> {
+        return await commentsRepository.updateComment(id, content)
+    },
+    async deleteComment(id: string): Promise<boolean> {
+        return await commentsRepository.deleteComment(id)
     }
 }

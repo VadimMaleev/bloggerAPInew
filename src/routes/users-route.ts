@@ -16,6 +16,7 @@ usersRouter.get('/', async(req: Request, res: Response) => {
 })
 
 usersRouter.post ('/',
+    authMiddleware,
     loginUsersValidation,
     passwordUsersValidation,
     errorsMiddleware,
