@@ -8,7 +8,7 @@ export const jwtService = {
         const token = jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: '5d'})
         return token
     },
-    async exractUserIdFromToken(token: string): Promise<ObjectId | null> {
+    async extractUserIdFromToken(token: string): Promise<string | null> {
         try {
             const result: any = jwt.verify(token, settings.JWT_SECRET)
             return result.userId

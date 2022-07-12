@@ -11,6 +11,5 @@ export const loginAndPassAuthMiddleware = async (req: Request, res: Response, ne
     if (!password) {
         return res.status(401).send('auth required')
     }
-
     next()
 }

@@ -1,4 +1,4 @@
-import {UserPagType, UserType} from "../repositories/db";
+import {UserPagType, UserDBType} from "../repositories/db";
 import {usersRepository} from "../repositories/users-repository";
 import {authService} from "./auth-service";
 
@@ -25,5 +25,8 @@ export const usersService = {
     },
     async deleteUser(id:string): Promise<boolean> {
         return await usersRepository.deleteUser(id)
+    },
+    async findUserById(userId: string): Promise<UserDBType | null> {
+        return await usersRepository.findUserById(userId)
     }
 }

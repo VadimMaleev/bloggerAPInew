@@ -67,6 +67,22 @@ export type UserDBType = WithId<{
     passwordHash: string
 }>
 
+export type CommentType = {
+    id: string,
+    content: string,
+    userId: string,
+    userLogin: string,
+    addedAt: string
+}
+
+export type CommentPagType = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: CommentType[]
+}
+
 const mongoUri =
     process.env.mongoUri ||
         "mongodb://0.0.0.0:27017";
@@ -77,6 +93,8 @@ const db = client.db("bloggers-api");
 export const bloggersCollection = db.collection<BloggerType>("bloggers");
 export const postsCollection = db.collection<PostType>("posts");
 export const usersCollection = db.collection<UserDBType>("users");
+export const commentsCollection = db.collection<CommentType>("comments");
+
 
 export async function runDb() {
     try {
