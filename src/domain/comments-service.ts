@@ -1,5 +1,5 @@
 import {postsRepository} from "../repositories/posts-db-repository";
-import {CommentPagType, CommentType} from "../repositories/db";
+import {CommentDto, CommentPagType, CommentType} from "../repositories/db";
 import {commentsRepository} from "../repositories/comments-repository";
 
 
@@ -20,19 +20,28 @@ export const commentsService = {
             return null
         }
     },
-    async createComment(id: string, content: string, userId: string, login: string): Promise<CommentType | null> {
+    async createComment(id: string, content: string, userId: string, login: string): Promise<CommentDto | null> {
         const post = await postsRepository.findPostById(id)
         if (post) {
-            const newComment = {
-                postId: id,
+            const newComment: CommentType = {
                 id: (+(new Date())).toString(),
+                postId: id,
                 content: content,
                 userId: userId,
                 userLogin: login,
                 addedAt: new Date().toString()
             }
-            const createdComment = await commentsRepository.createComment(newComment, id)
-            return createdComment
+            await commentsRepository.createComment(newComment)
+
+            const commentDto: CommentDto = {
+                id: newComment.id,
+                content: newComment.content,
+                userId: newComment.userId,
+                userLogin: newComment.userLogin,
+                addedAt: newComment.addedAt
+            }
+
+            return commentDto
         } else {
             return null
         }

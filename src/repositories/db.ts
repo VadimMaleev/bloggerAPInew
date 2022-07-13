@@ -68,12 +68,15 @@ export type UserDBType = WithId<{
 }>
 
 export type CommentType = {
+    postId: string,
     id: string,
     content: string,
     userId: string,
     userLogin: string,
     addedAt: string
 }
+
+export type CommentDto = Omit<CommentType, "postId">
 
 export type CommentPagType = {
     pagesCount: number,

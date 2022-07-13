@@ -41,15 +41,15 @@ commentsRouter.delete('/:id',
     async (req: Request, res: Response) => {
         const comment = await commentsService.findCommentById(req.params.id)
         if (!comment) {
-            return res.send(404)
+            return res.status(404).send()
         }
         if (comment.userId !== req.user!.id) {
-            return res.send(403)
+            return res.status(403).send()
         }
         const isDeleted = await commentsService.deleteComment(req.params.id)
         if (isDeleted) {
-            res.send(204)
+            res.status(204).send()
         } else {
-            res.send(404)
+            res.status(404).send()
         }
     })

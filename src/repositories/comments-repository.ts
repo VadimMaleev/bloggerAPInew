@@ -1,5 +1,6 @@
 import {commentsCollection, CommentType} from "./db";
 import {ObjectId} from "mongodb";
+import {create} from "domain";
 
 export const commentsRepository = {
 
@@ -10,14 +11,8 @@ export const commentsRepository = {
         return commentsCollection.find({postId: id}, {projection: {_id: 0, postId:0}})
             .skip(pageSize * (page - 1)).limit(pageSize).toArray();
     },
-    async createComment(newComment: CommentType, id: string): Promise <CommentType> {
-        const commentDbType = {
-            _id: new ObjectId(),
-            postId: id,
-            ... newComment
-        }
-        await commentsCollection.insertOne(commentDbType)
-        return newComment
+    async createComment(newComment: CommentType) {
+        await commentsCollection.insertOne(newComment)
     },
     async findCommentById(id: string): Promise<CommentType | null> {
         return await commentsCollection.findOne({id:id}, {projection: {_id: 0, postId: 0}})
