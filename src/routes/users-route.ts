@@ -1,6 +1,10 @@
 import {Request, Response, Router} from "express";
 import {usersService} from "../domain/users-service";
-import {loginUsersValidation, passwordUsersValidation} from "../middlewares/users-validation-middleware";
+import {
+    emailUsersValidation,
+    loginUsersValidation,
+    passwordUsersValidation
+} from "../middlewares/users-validation-middleware";
 import {errorsMiddleware} from "../middlewares/errors-validation-middleware";
 import {authMiddleware} from "../middlewares/authorization-middware";
 
@@ -18,10 +22,11 @@ usersRouter.get('/', async(req: Request, res: Response) => {
 usersRouter.post ('/',
     authMiddleware,
     loginUsersValidation,
+    emailUsersValidation,
     passwordUsersValidation,
     errorsMiddleware,
     async (req: Request, res: Response) => {
-    const newUser = await usersService.createUser(req.body.login, req.body.password)
+    const newUser = await usersService.createUser(req.body.login, req.body.password, req.body.email)
     res.status(201).send(newUser)
 })
 

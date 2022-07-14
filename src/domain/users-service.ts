@@ -1,4 +1,4 @@
-import {UserPagType, UserDBType} from "../repositories/db";
+import {UserPagType, UserDBType, UserType, UserDto} from "../repositories/db";
 import {usersRepository} from "../repositories/users-repository";
 import {authService} from "./auth-service";
 
@@ -15,13 +15,21 @@ export const usersService = {
             items: await usersRepository.findAllUsers(page, pageSize)
         }
     },
-    async createUser(login: string, password: string): Promise<{id: string, login: string}> {
+    async createUser(login: string, password: string, email: string): Promise<UserDto> {
         const newUser = {
             id: (+(new Date())).toString(),
-            login: login
+            login: login,
+            email: email
         }
         const hash = await authService.generateHash(password)
-        return usersRepository.createUser(newUser, hash)
+        await usersRepository.createUser(newUser, hash)
+
+        const userDto: UserDto = {
+            id: newUser.id,
+            login: newUser.login
+        }
+        return userDto
+
     },
     async deleteUser(id:string): Promise<boolean> {
         return await usersRepository.deleteUser(id)

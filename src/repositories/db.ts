@@ -49,8 +49,11 @@ export type PostPagType = {
 
 export type UserType = {
     id: string,
-    login: string
+    login: string,
+    email: string
 }
+
+export type UserDto = Omit<UserType, "email">
 
 export type UserPagType = {
     pagesCount: number,
@@ -60,12 +63,12 @@ export type UserPagType = {
     items: UserType[]
 }
 
-export type UserDBType = WithId<{
-    _id: ObjectId
+export type UserDBType = {
     id: string
     login: string
+    email: string
     passwordHash: string
-}>
+}
 
 export type CommentType = {
     postId: string,
@@ -90,7 +93,7 @@ const mongoUri =
     process.env.mongoUri ||
         "mongodb://0.0.0.0:27017";
 const mongoUriCloud = "mongodb://adminadmin:qwertyqwerty@ac-elscy7v-shard-00-00.1kg0qnf.mongodb.net:27017,ac-elscy7v-shard-00-01.1kg0qnf.mongodb.net:27017,ac-elscy7v-shard-00-02.1kg0qnf.mongodb.net:27017/?ssl=true&replicaSet=atlas-vr4d13-shard-0&authSource=admin&retryWrites=true&w=majority"
-export const client = new MongoClient(mongoUriCloud)
+export const client = new MongoClient(mongoUri)
 
 const db = client.db("bloggers-api");
 export const bloggersCollection = db.collection<BloggerType>("bloggers");

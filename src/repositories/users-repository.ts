@@ -6,17 +6,15 @@ export const usersRepository = {
         return usersCollection.countDocuments()
     },
     async findAllUsers(page: number, pageSize: number): Promise<UserType[]> {
-        return usersCollection.find({}, {projection: {_id: 0, passwordHash: 0}})
+        return usersCollection.find({}, {projection: {_id: 0, passwordHash: 0, email: 0}})
             .skip(pageSize * (page - 1)).limit(pageSize).toArray()
     },
-    async createUser(newUser: UserType, hash: string): Promise<UserType> {
+    async createUser(newUser: UserType, hash: string) {
         const userDBType = {
-            _id: new ObjectId,
             ...newUser,
             passwordHash: hash
         }
         await usersCollection.insertOne(userDBType)
-        return newUser
     },
     async findByLogin(login:string): Promise<UserDBType | null> {
         return await usersCollection.findOne({login:login})
