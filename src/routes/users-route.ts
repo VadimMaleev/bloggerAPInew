@@ -7,6 +7,7 @@ import {
 } from "../middlewares/users-validation-middleware";
 import {errorsMiddleware} from "../middlewares/errors-validation-middleware";
 import {authMiddleware} from "../middlewares/authorization-middware";
+import {ObjectId} from "mongodb";
 
 
 export const usersRouter = Router({})
@@ -33,7 +34,8 @@ usersRouter.post ('/',
 usersRouter.delete('/:id',
     authMiddleware,
     async (req: Request, res: Response) => {
-        const isDeleted = await usersService.deleteUser(req.params.id)
+    const userId = new ObjectId(req.params.id)
+        const isDeleted = await usersService.deleteUser(userId)
         if (isDeleted) {
             res.send(204)
         } else {

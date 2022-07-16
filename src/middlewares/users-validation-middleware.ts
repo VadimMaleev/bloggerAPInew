@@ -5,4 +5,4 @@ export const loginUsersValidation =
 export const passwordUsersValidation =
     body('password').isString().trim().isLength({min:6, max:20})
 export const emailUsersValidation =
-    body("email").isString().trim().isEmail()
+    body("email").trim().isEmail()

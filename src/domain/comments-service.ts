@@ -1,6 +1,7 @@
 import {postsRepository} from "../repositories/posts-db-repository";
 import {CommentDto, CommentPagType, CommentType} from "../repositories/db";
 import {commentsRepository} from "../repositories/comments-repository";
+import {ObjectId} from "mongodb";
 
 
 export const commentsService = {

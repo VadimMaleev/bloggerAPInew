@@ -110,7 +110,7 @@ postsRouter.post('/:id/comments',
     commentsValidation,
     errorsMiddleware,
     async (req: Request, res: Response) => {
-        const newComment = await commentsService.createComment(req.params.id, req.body.content, req.user!.id, req.user!.login)
+        const newComment = await commentsService.createComment(req.params.id, req.body.content, req.user!._id.toString(), req.user!.accountData.userName)
         if (newComment === null) {
             res.send(404)
         } else {

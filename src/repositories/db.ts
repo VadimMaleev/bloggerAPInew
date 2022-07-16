@@ -1,4 +1,5 @@
-import {MongoClient, ObjectId, WithId} from "mongodb";
+import {MongoClient, ObjectId} from "mongodb";
+
 
 // export interface pagination {
 //     pagesCount: number,
@@ -48,7 +49,7 @@ export type PostPagType = {
 
 
 export type UserType = {
-    id: string,
+    id: ObjectId,
     login: string,
     email: string
 }
@@ -60,7 +61,22 @@ export type UserPagType = {
     page: number,
     pageSize: number,
     totalCount: number,
-    items: UserType[]
+    items: UserDto[]
+}
+
+export type UserAccType = {
+    _id: ObjectId,
+    accountData: {
+        userName: string,
+        email: string,
+        passwordHash: string,
+        createdAt: string
+    },
+    emailConfirmation: {
+        confirmationCode: string,
+        expirationDate: Date,
+        isConfirmed: boolean
+    }
 }
 
 export type UserDBType = {
@@ -98,7 +114,7 @@ export const client = new MongoClient(mongoUri)
 const db = client.db("bloggers-api");
 export const bloggersCollection = db.collection<BloggerType>("bloggers");
 export const postsCollection = db.collection<PostType>("posts");
-export const usersCollection = db.collection<UserDBType>("users");
+export const usersCollection = db.collection<UserAccType>("users");
 export const commentsCollection = db.collection<CommentType>("comments");
 
 

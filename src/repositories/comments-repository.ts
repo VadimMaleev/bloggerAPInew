@@ -1,6 +1,5 @@
 import {commentsCollection, CommentType} from "./db";
-import {ObjectId} from "mongodb";
-import {create} from "domain";
+
 
 export const commentsRepository = {
 

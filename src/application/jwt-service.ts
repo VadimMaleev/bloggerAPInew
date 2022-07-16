@@ -1,11 +1,10 @@
-import {UserType} from "../repositories/db";
+import {UserAccType, UserType} from "../repositories/db";
 import jwt from 'jsonwebtoken'
 import {settings} from "../settings/settings";
-import {ObjectId} from "mongodb";
 
 export const jwtService = {
-    async createJWT(user: UserType) {
-        const token = jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: '5d'})
+    async createJWT(user: UserAccType) {
+        const token = jwt.sign({userId: user._id}, settings.JWT_SECRET, {expiresIn: '5d'})
         return token
     },
     async extractUserIdFromToken(token: string): Promise<string | null> {
