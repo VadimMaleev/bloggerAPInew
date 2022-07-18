@@ -64,5 +64,8 @@ export const usersService = {
     },
     async findUserByEmail(email: string): Promise<UserAccType | null> {
         return await usersRepository.findUserByEmail(email)
+    },
+    async findUserByLogin(login: string): Promise<UserAccType | null> {
+        return await usersRepository.findByLogin(login)
     }
 }

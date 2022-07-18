@@ -35,6 +35,12 @@ authRouter.post('/registration',
     passwordUsersValidation,
     errorsMiddleware,
     async (req: Request, res: Response) => {
+        const userEmail = await usersService.findUserByEmail(req.body.email)
+        const userLogin = await usersService.findUserByLogin(req.body.login)
+        if (userEmail || userLogin) {
+            return res.send(400)
+        }
+
         const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
         res.status(204).send(user)
     })
