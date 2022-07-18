@@ -7,6 +7,7 @@ import {usersRouter} from "./routes/users-route";
 import {runDb} from './repositories/db'
 import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
+import {testingRouter} from "./routes/testing-route";
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -19,6 +20,7 @@ app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/comments', commentsRouter)
+app.use('/testing', testingRouter)
 
 const startApp = async () => {
     await runDb()

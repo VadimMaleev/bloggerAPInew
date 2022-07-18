@@ -9,10 +9,12 @@ import {authService} from "../domain/auth-service";
 import {loginAndPassAuthMiddleware} from "../middlewares/login-and-pass-auth-middleware";
 import {emailAdapter} from "../adapters/email-adapter";
 import {usersService} from "../domain/users-service";
+import {ipBlockMiddleware} from "../middlewares/ip-block-middleware";
 
 export const authRouter = Router({})
 
 authRouter.post('/login',
+    ipBlockMiddleware('login'),
     loginAndPassAuthMiddleware,
     loginUsersValidation,
     passwordUsersValidation,
@@ -27,6 +29,7 @@ authRouter.post('/login',
     })
 
 authRouter.post('/registration',
+    ipBlockMiddleware('registration'),
     loginUsersValidation,
     emailUsersValidation,
     passwordUsersValidation,
@@ -37,10 +40,11 @@ authRouter.post('/registration',
     })
 
 authRouter.post('/registration-confirmation',
+    ipBlockMiddleware('registration-confirmation'),
     async (req: Request, res: Response) => {
         const result = await usersService.confirmUser(req.body.code)
         if (result) {
-            res.status(204).send
+            res.send(204)
         } else {
             res.status(400).send({
                 errorsMessages: [
@@ -54,14 +58,15 @@ authRouter.post('/registration-confirmation',
     })
 
 authRouter.post('/registration-email-resending',
+    ipBlockMiddleware('registration-email-resending'),
     emailUsersValidation,
     errorsMiddleware,
     async (req: Request, res: Response) => {
         const user = await usersService.findUserByEmail(req.body.email)
         if (!user) {
-            return res.status(400).send
+            return res.send(400)
         } else {
             await emailAdapter.sendEmailConfirmationCode(user)
-            res.status(204).send
+            res.send(204)
         }
     })
