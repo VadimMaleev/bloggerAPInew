@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import {UserAccType} from "../repositories/db";
 
 export const emailAdapter = {
-    async sendEmailConfirmationCode(newUser: UserAccType) {
+    async sendEmailConfirmationCode(code: string, email: string) {
         let transport = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -13,9 +13,9 @@ export const emailAdapter = {
 
         await transport.sendMail({
             from: '"Bloggers Api" <bloggersauthmail@gmail.com>',
-            to: newUser.accountData.email,
+            to: email,
             subject: 'Confirm Account',
-            html:`<a href='https://somesite.com/confirm-email?code=${newUser.emailConfirmation.confirmationCode}'>Ссылка</a>`
+            html:`<a href='https://somesite.com/confirm-email?code=${code}'>Ссылка</a>`
         })
     }
 }

@@ -79,7 +79,6 @@ authRouter.post('/registration-email-resending',
             return res.status(400).send({ errorsMessages: [{ message: "email does not exist", field: "email" }] })
         } else {
             await usersService.createNewConfirmCode(user)
-            await emailAdapter.sendEmailConfirmationCode(user)
             res.send(204)
         }
     })

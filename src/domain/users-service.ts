@@ -42,7 +42,7 @@ export const usersService = {
             login: newUser.accountData.userName
         }
 
-        await emailAdapter.sendEmailConfirmationCode(newUser)
+        await emailAdapter.sendEmailConfirmationCode(newUser.emailConfirmation.confirmationCode, newUser.accountData.email)
         return userDto
 
     },
@@ -72,5 +72,6 @@ export const usersService = {
         const confirmCode = uuidv4()
         const expirationDate = add(new Date(), {hours: 3})
         await usersRepository.updateConfirmCode(user, confirmCode, expirationDate)
+        await emailAdapter.sendEmailConfirmationCode(confirmCode, user.accountData.email)
     }
 }
