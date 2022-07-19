@@ -67,5 +67,9 @@ export const usersService = {
     },
     async findUserByLogin(login: string): Promise<UserAccType | null> {
         return await usersRepository.findByLogin(login)
+    },
+    async createNewConfirmCode(user: UserAccType) {
+        const confirmCode = uuidv4()
+        await usersRepository.updateConfirmCode(user, confirmCode)
     }
 }

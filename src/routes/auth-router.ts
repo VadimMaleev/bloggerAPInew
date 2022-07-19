@@ -37,8 +37,12 @@ authRouter.post('/registration',
     async (req: Request, res: Response) => {
         const userEmail = await usersService.findUserByEmail(req.body.email)
         const userLogin = await usersService.findUserByLogin(req.body.login)
-        if (userEmail || userLogin) {
+        if (userEmail) {
             return res.status(400).send({errorsMessages: [{ message: "user does exist", field: "email" }]})
+        }
+
+        if (userLogin) {
+            return res.status(400).send({errorsMessages: [{ message: "user does exist", field: "login" }]})
         }
 
         const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
@@ -72,6 +76,7 @@ authRouter.post('/registration-email-resending',
         if (!user) {
             return res.send(400)
         } else {
+            await usersService.createNewConfirmCode(user)
             await emailAdapter.sendEmailConfirmationCode(user)
             res.send(204)
         }

@@ -34,5 +34,9 @@ export const usersRepository = {
     },
     async findUserByEmail(email: string): Promise<UserAccType | null> {
         return await usersCollection.findOne({"accountData.email": email})
+    },
+    async updateConfirmCode(user: UserAccType, confirmCode: string) {
+       await usersCollection.findOneAndUpdate({_id: user._id},
+           {$set:{"emailConfirmation.confirmationCode": confirmCode}})
     }
 }
