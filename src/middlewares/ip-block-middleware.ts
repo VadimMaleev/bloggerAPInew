@@ -17,6 +17,7 @@ export const ipBlockMiddleware = (endpoint: string) => (req: Request, res: Respo
         countInput: ipObject.length + 1,
         timeInput: +(new Date())
     }
+    console.log(req.ip, 'Our IP-Address')
     ipObject.push(input)
 
     const ipAdresses = ipObject.filter(o=>o.ip === req.ip)
