@@ -38,7 +38,7 @@ authRouter.post('/registration',
         const userEmail = await usersService.findUserByEmail(req.body.email)
         const userLogin = await usersService.findUserByLogin(req.body.login)
         if (userEmail || userLogin) {
-            return res.send(400)
+            return res.status(400).send({errorsMessages: [{ message: "user does exist", field: "email" }]})
         }
 
         const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
