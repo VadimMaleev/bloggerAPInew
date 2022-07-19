@@ -70,6 +70,7 @@ export const usersService = {
     },
     async createNewConfirmCode(user: UserAccType) {
         const confirmCode = uuidv4()
-        await usersRepository.updateConfirmCode(user, confirmCode)
+        const expirationDate = add(new Date(), {hours: 3})
+        await usersRepository.updateConfirmCode(user, confirmCode, expirationDate)
     }
 }
