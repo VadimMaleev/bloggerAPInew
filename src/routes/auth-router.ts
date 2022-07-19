@@ -37,13 +37,12 @@ authRouter.post('/registration',
     async (req: Request, res: Response) => {
         const userEmail = await usersService.findUserByEmail(req.body.email)
         const userLogin = await usersService.findUserByLogin(req.body.login)
-        if (userEmail) {
-            return res.status(400).send({errorsMessages: [{ message: "user does exist", field: "email" }]})
-        }
-
-        if (userLogin) {
+        if (userEmail || userLogin) {
             return res.status(400).send({errorsMessages: [{ message: "user does exist", field: "login" }]})
         }
+        // if (userLogin) {
+        //     return res.status(400).send({errorsMessages: [{ message: "user does exist", field: "login" }]})
+        // }
 
         const user = await usersService.createUser(req.body.login, req.body.password, req.body.email)
         res.status(204).send(user)
