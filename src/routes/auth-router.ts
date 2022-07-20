@@ -72,12 +72,12 @@ authRouter.post('/registration-email-resending',
     async (req: Request, res: Response) => {
         const user = await usersService.findUserByEmail(req.body.email)
         if(user && user.emailConfirmation.isConfirmed) {
-            res.status(400).send({ errorsMessages: [{ message: "user confirmed now", field: "email" }] })
+            return res.status(400).send({ errorsMessages: [{ message: "user confirmed now", field: "email" }] })
         }
         if (!user) {
             return res.status(400).send({ errorsMessages: [{ message: "email does not exist", field: "email" }] })
         } else {
             await usersService.createNewConfirmCode(user)
-            res.send(204)
+            return res.sendStatus(204)
         }
     })
