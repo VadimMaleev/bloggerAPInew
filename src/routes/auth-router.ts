@@ -7,7 +7,6 @@ import {
 import {errorsMiddleware} from "../middlewares/errors-validation-middleware";
 import {authService} from "../domain/auth-service";
 import {loginAndPassAuthMiddleware} from "../middlewares/login-and-pass-auth-middleware";
-import {emailAdapter} from "../adapters/email-adapter";
 import {usersService} from "../domain/users-service";
 import {ipBlockMiddleware} from "../middlewares/ip-block-middleware";
 
@@ -22,7 +21,7 @@ authRouter.post('/login',
     async (req: Request, res: Response) => {
         const token = await authService.createToken(req.body.login)
         if (token === null) {
-            res.status(400).send
+            return res.sendStatus(400)
         } else {
             res.status(200).send(token)
         }
