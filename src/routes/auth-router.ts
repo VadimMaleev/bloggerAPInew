@@ -26,7 +26,7 @@ authRouter.post('/login',
         if (accessToken === null || refreshToken === null) {
             return res.sendStatus(400)
         } else {
-            return res.status(200).cookie('refreshToken', refreshToken, {httpOnly: true}).send(accessToken)
+            return res.status(200).cookie('refreshToken', refreshToken, {httpOnly: true, secure: true}).send(accessToken)
         }
     })
 
