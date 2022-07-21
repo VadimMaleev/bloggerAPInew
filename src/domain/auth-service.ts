@@ -11,7 +11,7 @@ export const authService = {
     async checkCredential(login:string): Promise<UserAccType | null>{
         const user = await usersRepository.findByLogin(login)
         if (!user) return null
-        if (!user.emailConfirmation.isConfirmed) return null
+        //if (!user.emailConfirmation.isConfirmed) return null
 
         return user
     },
