@@ -33,7 +33,7 @@ export const jwtAuthMiddleware = async (req: Request, res: Response, next: NextF
 
 export const jwtRefreshAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const refreshTokenFromCookie = req.cookies?.refreshToken
-    console.log(req.cookies)
+    console.log(req.headers.cookie)
     if (!refreshTokenFromCookie) {
         res.send(401)
         return
