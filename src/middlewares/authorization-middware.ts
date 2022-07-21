@@ -38,7 +38,7 @@ export const jwtRefreshAuthMiddleware = async (req: Request, res: Response, next
     }
 
     const refreshToken = await jwtService.findExpiredToken(req.cookies.refreshToken)
-    if (req.cookies.refreshToken === refreshToken!.refreshToken) {
+    if (req.cookies.refreshToken === refreshToken?.refreshToken) {
         return res.sendStatus(401)
     } else {
         const token = req.cookies.refreshToken.split(' ')[1]
