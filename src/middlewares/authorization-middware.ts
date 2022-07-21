@@ -32,16 +32,17 @@ export const jwtAuthMiddleware = async (req: Request, res: Response, next: NextF
 }
 
 export const jwtRefreshAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.cookies.refreshToken) {
+    const refreshTokenFromCookie = req.cookies?.refreshToken
+    if (!refreshTokenFromCookie) {
         res.send(401)
         return
     }
 
-    const refreshToken = await jwtService.findExpiredToken(req.cookies.refreshToken)
-    if (req.cookies.refreshToken === refreshToken?.refreshToken) {
+    const refreshToken = await jwtService.findExpiredToken(refreshTokenFromCookie)
+    if (refreshToken?.refreshToken) {
         return res.sendStatus(401)
     } else {
-        const token = req.cookies.refreshToken.split(' ')[1]
+        const token = refreshTokenFromCookie.split(' ')[1]
         const _userId = await jwtService.extractUserIdFromToken(token)
         if(_userId) {
             const userId = new ObjectId(_userId)
