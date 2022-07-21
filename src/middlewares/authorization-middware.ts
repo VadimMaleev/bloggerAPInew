@@ -30,3 +30,27 @@ export const jwtAuthMiddleware = async (req: Request, res: Response, next: NextF
         return res.send(401)
     }
 }
+
+export const jwtRefreshAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.cookies.refreshToken) {
+        res.send(401)
+        return
+    }
+
+    const refreshToken = await jwtService.findExpiredToken(req.cookies.refreshToken)
+    if (req.cookies.refreshToken === refreshToken?.refreshToken) {
+        return res.sendStatus(401)
+    } else {
+        const token = req.cookies.refreshToken.split(' ')[1]
+        const _userId = await jwtService.extractUserIdFromToken(token)
+        if(_userId) {
+            const userId = new ObjectId(_userId)
+            req.user = await usersService.findUserById(userId)
+            next()
+        } else {
+            return res.send(401)
+        }
+    }
+
+
+}

@@ -105,6 +105,11 @@ export type CommentPagType = {
     items: CommentType[]
 }
 
+export type TokenType= {
+    _id: ObjectId,
+    refreshToken: string
+}
+
 const mongoUri =
     process.env.mongoUri ||
         "mongodb://0.0.0.0:27017";
@@ -116,7 +121,7 @@ export const bloggersCollection = db.collection<BloggerType>("bloggers");
 export const postsCollection = db.collection<PostType>("posts");
 export const usersCollection = db.collection<UserAccType>("users");
 export const commentsCollection = db.collection<CommentType>("comments");
-
+export const expiredTokensCollection = db.collection<TokenType>("comments");
 
 export async function runDb() {
     try {

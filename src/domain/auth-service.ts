@@ -22,6 +22,12 @@ export const authService = {
         const user = await authService.checkCredential(login)
         if (user === null) return null
         const token = await jwtService.createJWT(user!)
-        return {"token": token}
-    }
+        return {"accessToken": token}
+    },
+    async createRefreshToken(login: string) {
+        const user = await authService.checkCredential(login)
+        if (user === null) return null
+        const token = await jwtService.createRefreshJWT(user!)
+        return {"accessToken": token}
+    },
 }
