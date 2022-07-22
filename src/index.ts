@@ -8,11 +8,13 @@ import {runDb} from './repositories/db'
 import {authRouter} from "./routes/auth-router";
 import {commentsRouter} from "./routes/comments-router";
 import {testingRouter} from "./routes/testing-route";
+import cookieParser from "cookie-parser";
 
 const app = express()
 const port = process.env.PORT || 5000
 
 app.use(cors())
+app.use(cookieParser())
 app.use(bodyParser.json())
 app.set('trust proxy', true)
 
