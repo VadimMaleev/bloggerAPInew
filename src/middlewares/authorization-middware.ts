@@ -40,12 +40,11 @@ export const jwtRefreshAuthMiddleware = async (req: Request, res: Response, next
         return
     }
 
-    const refreshToken = await jwtService.findExpiredToken(refreshTokenFromCookie)
-    if (refreshToken?.refreshToken) {
+    const result = await jwtService.findExpiredToken(refreshTokenFromCookie)
+    if (result?.refreshToken) {
         return res.status(401).send("token is expired")
     } else {
-        const token = refreshTokenFromCookie.split(' ')[1]
-        const _userId = await jwtService.extractUserIdFromToken(token)
+        const _userId = await jwtService.extractUserIdFromToken(refreshTokenFromCookie)
         if(_userId) {
             const userId = new ObjectId(_userId)
             req.user = await usersService.findUserById(userId)
