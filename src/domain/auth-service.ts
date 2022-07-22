@@ -28,6 +28,6 @@ export const authService = {
         const user = await authService.checkCredential(login)
         if (user === null) return null
         const token = await jwtService.createRefreshJWT(user!)
-        return {token}
+        return token
     },
 }
