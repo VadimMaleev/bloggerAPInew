@@ -33,7 +33,8 @@ export const jwtAuthMiddleware = async (req: Request, res: Response, next: NextF
 
 export const jwtRefreshAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const refreshTokenFromCookie = req.cookies?.refreshToken
-    console.log(req.headers.cookie)
+    console.log("cookie = ", req.headers.cookie)
+    console.log("refresh token from cookie = ", refreshTokenFromCookie)
     if (!refreshTokenFromCookie) {
         res.status(401).send('cookies is not exist')
         return
